@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import EventCard from "../../components/EventCard";
 import Select from "../../components/Select";
 import { useData } from "../../contexts/DataContext";
@@ -13,25 +13,29 @@ const EventList = () => {
   const { data, error } = useData();
   const [type, setType] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
-  ).filter((event, index) => {
-    if (
-      (currentPage - 1) * PER_PAGE <= index &&
-      PER_PAGE * currentPage > index
-    ) {
+
+  const filteredEvents = ((!type ? data?.events : data?.events) || []).filter(
+    (event) => event.cover 
+  ).filter(event => {
+    if (!type || event.type === type) {
       return true;
     }
     return false;
   });
+
+  const startFilt = (currentPage - 1) * PER_PAGE; //
+  const endFilt = Math.min(((currentPage - 1) * PER_PAGE) + PER_PAGE, filteredEvents.length); // calcul
+  
+  const pageEvents = filteredEvents.slice(startFilt, endFilt); // modif
+
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
   };
-  const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
+
+  const pageNumber = Math.ceil((filteredEvents?.length || 0) / PER_PAGE);
   const typeList = new Set(data?.events.map((event) => event.type));
+
   return (
     <>
       {error && <div>An error occured</div>}
@@ -44,8 +48,9 @@ const EventList = () => {
             selection={Array.from(typeList)}
             onChange={(value) => (value ? changeType(value) : changeType(null))}
           />
+
           <div id="events" className="ListContainer">
-            {filteredEvents.map((event) => (
+            {pageEvents.map((event) => (
               <Modal key={event.id} Content={<ModalEvent event={event} />}>
                 {({ setIsOpened }) => (
                   <EventCard
