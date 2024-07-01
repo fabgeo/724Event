@@ -117,7 +117,7 @@ const Page = () => {
               <Form
                 onSuccess={() => {
                   setIsOpened(true);
-                  setSuccess(true); // Définissez success sur true lorsque le formulaire est soumis avec succès
+                  setSuccess(true); // Ajout Défini success sur true lorsque le formulaire est soumis avec succès
                 }}
                 onError={() => null}
               />
