@@ -1,33 +1,34 @@
 import { useEffect, useState } from "react";
 import { useData } from "../../contexts/DataContext";
 import { getMonth } from "../../helpers/Date";
-
 import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
-  const byDateDesc = data?.focus.sort((evtA, evtB) =>
+
+  // Vérifier si data et data.focus existent avant de les utiliser
+  const byDateDesc = data?.focus?.sort((evtA, evtB) =>
     new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
-  );
-  const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0), // correcte beug ajout du - 1 pour correction du beug de la modal
-      5000
-    );
-  };
+  ) || [];
+
   useEffect(() => {
-    nextCard();
-  });
+    const nextCard = () => {
+      setIndex(prevIndex => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
+    };
+    const timer = setTimeout(nextCard, 5000);
+
+    // Nettoyer le timeout pour éviter les fuites de mémoire
+    return () => clearTimeout(timer);
+  }, [index, byDateDesc.length]);
+
   return (
     <div className="SlideCardList">
-      {byDateDesc?.map((event, idx) => (
-        <>
+      {byDateDesc.map((event, idx) => (
+        <div key={event.date}>
           <div
-            key={event.title}
-            className={`SlideCard SlideCard--${
-              index === idx ? "display" : "hide"
-            }`}
+            key={event.date}
+            className={`SlideCard SlideCard--${index === idx ? "display" : "hide"}`}
           >
             <img src={event.cover} alt="forum" />
             <div className="SlideCard__descriptionContainer">
@@ -42,15 +43,15 @@ const Slider = () => {
             <div className="SlideCard__pagination">
               {byDateDesc.map((_, radioIdx) => (
                 <input
-                  key={`${event.id}`}
+                  key={radioIdx}
                   type="radio"
                   name="radio-button"
-                  checked={idx === radioIdx}
+                  defaultChecked={index === radioIdx}
                 />
               ))}
             </div>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

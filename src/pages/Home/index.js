@@ -117,7 +117,6 @@ const Page = () => {
               <Form
                 onSuccess={() => {
                   setIsOpened(true);
-                  setSuccess(true); // Ajout Défini success sur true lorsque le formulaire est soumis avec succès
                 }}
                 onError={() => null}
               />
@@ -128,7 +127,7 @@ const Page = () => {
       <footer className="row">
         <div className="col presta">
           <h3>Notre dernière prestation</h3>
-          {last && (
+          {last && ( // ajout d'un controle pour verif l'écistance de la data avant display avec un &&
             <Modal key={last.id} Content={<ModalEvent event={last} />}>
               {({ setIsOpened }) => (
                 <EventCard

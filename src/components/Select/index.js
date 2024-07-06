@@ -17,7 +17,7 @@ const Select = ({
   const [collapsed, setCollapsed] = useState(true);
   const changeValue = (newValue) => {
     onChange(newValue);  // met a jour la value
-    setValue(newValue);
+    setValue(newValue);  // fait passer la nouvelle valeur newValue du radio select pour etre prise en compte lors du onChange
     setCollapsed(true);   // fixe l'état true
   };
   return (
