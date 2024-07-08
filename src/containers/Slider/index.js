@@ -16,7 +16,7 @@ const Slider = () => {
     const nextCard = () => {
       setIndex(prevIndex => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
     };
-    const timer = setTimeout(nextCard, 5000);
+    const timer = setTimeout(nextCard, 5000);  
 
     // Nettoyer le timeout pour éviter les fuites de mémoire
     return () => clearTimeout(timer);
@@ -25,10 +25,11 @@ const Slider = () => {
   return (
     <div className="SlideCardList">
       {byDateDesc.map((event, idx) => (
-        <div key={event.date}>
+        <div key={`${event.date}`}>
           <div
-            key={event.date}
-            className={`SlideCard SlideCard--${index === idx ? "display" : "hide"}`}
+            className={`SlideCard SlideCard--${
+              index === idx ? "display" : "hide"
+            }`}
           >
             <img src={event.cover} alt="forum" />
             <div className="SlideCard__descriptionContainer">
@@ -43,10 +44,11 @@ const Slider = () => {
             <div className="SlideCard__pagination">
               {byDateDesc.map((_, radioIdx) => (
                 <input
-                  key={radioIdx}
+                  key={`${_.date}`}
                   type="radio"
                   name="radio-button"
-                  defaultChecked={index === radioIdx}
+                  checked={index === radioIdx} // Utiliser checked au lieu de defaultChecked
+                  onChange={() => setIndex(radioIdx)} // Ajouter un gestionnaire d'événements pour changer l'index
                 />
               ))}
             </div>
